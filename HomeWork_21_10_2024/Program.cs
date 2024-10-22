@@ -58,6 +58,8 @@ Switch case не использовать.
 */
 
 using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 public class Program
@@ -69,11 +71,65 @@ public class Program
         Console.Title = "Задание по List";
         //1
         Console.WriteLine("Задание #1");
-        List<string> strings = new List<string> { "zero", "one", "two", "three" };
+        List<string> strings = new List<string> { "zero", "onetwo", "two", "three", "one", "five-zero", "zero-two", "zerozero" };
+        foreach (string s in strings)
+        {
+            Console.Write(s + " ");
+        }
+        Console.WriteLine();
+        string specified = "zero" ;
+        List<string> first = new List<string> ();
+        List<string> second = new List<string>();
+        List<string> third = new List<string>();
+        
+        int count = 0;
+        foreach (string s in strings)
+        {
+            int counts = Count (s, specified);
+            if (counts == 1)
+            {
+                first.Add(s);
+            }
+            else if (counts > 1)
+            {
+                second.Add(s);
+            }
+            else
+            {
+                third.Add(s);
+            }
+        }
+
+        foreach (string s in first)
+        {
+            Console.Write(s + " ");
+        }
+        Console.WriteLine();
+
+        foreach (string s in second)
+        {
+            Console.Write(s + " ");
+        }
+        Console.WriteLine();
+        
+        foreach (string s in third)
+        {
+            Console.Write(s + " ");
+        }
+        Console.WriteLine();
+        //List<string> fourth = new List<string>();
+
+
+
 
         //2
         Console.WriteLine("Задание #2");
         List<int> ints = new List<int> { 1, -5, 6, 7, -3, -7, 0, 99 };
+        foreach(int i in ints)
+        {
+            Console.Write(i + " ");
+        }
+        Console.WriteLine();
         int sumplus = 0;
         int summinus = 0;
         sumplus = ints.FindAll(n => n > 0).Sum();
@@ -85,7 +141,7 @@ public class Program
         List<int> ints1 = new List<int> { 1, 1, 2, 9, 12, 3, 2, 4, 5, 6, 5, 5 };
         foreach(int i in ints1)
         {
-            Console.Write(i);
+            Console.Write(i + " ");
         }
         Console.WriteLine();
         List<int> subList = new List<int>();
@@ -98,7 +154,7 @@ public class Program
         }
         foreach (int i in subList)
         {
-            Console.Write(i);
+            Console.Write(i + " ");
         }
         Console.WriteLine();
 
@@ -128,6 +184,19 @@ public class Program
             strBild.Replace(numberValue.ToString(), numberNume);
         }
         Console.WriteLine(strBild);
-        //Console.WriteLine(strBild.ToString());
+        
+
+    }
+
+    static int Count(string text, string text2)
+    {
+        int count = 0;
+        int index = text.IndexOf(text2);
+        while (index != -1)
+        {
+            ++count;
+            index = text.IndexOf(text2, index + text2.Length);
+        }
+        return count;
     }
 }
