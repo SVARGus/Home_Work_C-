@@ -1,15 +1,46 @@
 ﻿using System;
 using System.Runtime.Intrinsics.Arm;
+using static Student;
 public class Program
 {
     public static void Main()
     {
-
+        var pavel = new Student("Кузнецов", "Павел", "Николаевич", "БВ311");
+        // Тестовое заполнение и вывод на Экран
+        Random random = new Random();
+        int volume = 0; // рандомно считает количество оценок которые добавим в предмет
+        int grade = 0; // оценка для генерации и добавления
+        foreach (Subject subject in Enum.GetValues(typeof(Subject)))
+        {
+            volume = random.Next(3, 8);
+            for (int i = 0; i < volume; ++i)
+            {
+                grade = random.Next(8, 12);
+                pavel.AddRatSub(subject, grade);
+            }
+        }
+        Console.WriteLine("Группа {1}, Студент {0}", pavel.Fio, pavel.Group);
+        foreach (Subject subject in Enum.GetValues(typeof(Subject)))
+        {
+            Console.WriteLine("Предмет {0}.", subject.ToString());
+            Console.Write("Оценки: ");
+            if (pavel.GetGradesForSubject(subject).Count > 0)
+            {
+                Console.Write("Оценки: ");
+                Console.WriteLine(string.Join(", ", pavel.GetGradesForSubject(subject)));
+                Console.WriteLine("Средняя оценка по предмету {0} равняется {1}", subject.ToString(), pavel.AverageRatSubject(subject));
+            }
+            else
+            {
+                Console.WriteLine("Оценок нету!");
+            }
+        }
+        Console.WriteLine("Общая средняя оценка = " + pavel.AverageRat());
     }
 }
 class Student
 {
-    enum Subject { Informatics, LanguageC, LanguageCPP, LanguageHTMLCSS, Pattern, LanguageCSharp, DataBase }
+    public enum Subject { Informatics, LanguageC, LanguageCPP, LanguageHTMLCSS, Pattern, LanguageCSharp, DataBase }
     private string _latName { get; set; }
     public string LastName 
     { 
@@ -37,44 +68,54 @@ class Student
         set 
         { 
             _middleName = value;
-            _fio = String.Concat(_latName, _firstName, _middleName);
+            _fio = String.Concat(_latName," ", _firstName, " ", _middleName);
         } 
     }
     private string _fio {  get; set; } 
     public string Fio { get { return _fio; } }
     private string _group { get; set; } // Можно дополнительно реализовать класс группа и сдесь записать ссылку на определенную группу
     public string Group { get { return _group; } set { _group = value; } } // при реализации класса группы в сеттере можно реализовать метод смены группы
-    private Dictionary<Subject, List<int>> _listGrades { get; set; }
+    
+    private Dictionary<Subject, List<int>> _listGrades { get; set; } = new Dictionary<Subject, List<int>>();
+    //public Dictionary<Subject, List<int>> ListGrades { get { return _listGrades; } }
+    public Student(string latName, string firstName, string middleName, string group)
+    {
+        _latName = latName;
+        _firstName = firstName;
+        _middleName = middleName;
+        _fio = String.Concat(_latName, " ", _firstName, " ", _middleName);
+        _group = group;
+    }
     // Методы
-    void TransferGroup (string group)
+    public void TransferGroup (string group)
     {
         // при наличии отдельного класса группы, производится перемещение студента
         // до реализации вызывается обычный метод смены названия
         Group = group;
     }
-    double AverageRatSubject (Subject subject) // средний бал по конкретному предмету
+    public double AverageRatSubject (Subject subject) // средний бал по конкретному предмету
     {
-        double average = 0;
-        // реализация
-        return average;
+        if (_listGrades.ContainsKey(subject) && _listGrades[subject].Count > 0)
+        {
+            return (double)_listGrades[subject].Average();
+        }
+        return 0;
     }
-    double AverageRat() // общий средний бал по  студенту
+    public double AverageRat() // общий средний бал по  студенту
     {
         double average = 0;
         int sum = 0;
         int count = 0;
-        foreach (Subject subject in Enum.GetValues(typeof(Subject)))
+        foreach (var list in _listGrades)
         {
-            if (_listGrades.ContainsKey(subject))
-            {
-                sum += _listGrades[subject].Sum();
-                count += _listGrades[subject].Count();
-            }
+            sum += list.Value.Sum();
+            count += list.Value.Count();
         }
-        average = (double)sum / count; // проверка на ноль не сделана!!
+        if (count != 0)
+            average = (double)sum / count;
         return average;
     }
-    void AddRatSub(Subject subject, int rat)
+    public void AddRatSub(Subject subject, int rat) // добавление оценки в конкретный предмет
     {
         if (_listGrades.ContainsKey(subject))
         {
@@ -84,5 +125,13 @@ class Student
         {
             _listGrades[subject] = new List<int> { rat };
         }
+    }
+    public List<int> GetGradesForSubject(Subject subject) // доп метод для вывода на экран
+    {
+        if (_listGrades.ContainsKey(subject))
+        {
+            return _listGrades[subject];
+        }
+        return new List<int>();
     }
 }
