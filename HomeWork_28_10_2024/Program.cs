@@ -1,4 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+
+/*
+Задание №1
+Разработать архитектуру классов иерархии товаров при разработке системы управления потоками товаров для дистрибьюторской компании. 
+Прописать члены классов.
+Должны быть предусмотрены разные типы товаров, в том числе:
+бытовая химия;
+продукты питания.
+Предусмотреть классы управления потоком товаров (пришло, реализовано, списано, передано).
+ */
 
 public class Program
 {
@@ -29,10 +40,10 @@ public class DomesticChemical : Product
     public DateTime ExpirationDate { get { return _expirationDate; } set { _expirationDate = value; } } // Обычно срок годности не меняется у товара, поэтому лучше без set
     private string _chemicalComposition { get; set; } // Химический состав товара
     public string ChemicalComposition { get { return _chemicalComposition; } set { _chemicalComposition = value; } }
-
+    // Добавить конструктор без указания количества
     public override void GetInfo()
     {
-        throw new NotImplementedException(); // описание товара
+        Console.WriteLine($"Товар: {Name}, ID: {Id}, Цена: {Price}, Количество: {Quantity}, Срок годности: {ExpirationDate.ToShortDateString()}, Состав: {ChemicalComposition}"); // описание товара
     }
 }
 public class FoodProducts : Product
@@ -41,9 +52,10 @@ public class FoodProducts : Product
     public DateTime ExpirationDate { get { return _expirationDate; } set { _expirationDate = value; } } // Обычно срок годности не меняется у товара, поэтому лучше без set
     private string _nutritionalValue { get; set; } // Пищевая ценность
     public string NutritionalValue { get { return _nutritionalValue; } set { _nutritionalValue = value; } }
+    // Добавить конструктор без указания количества
     public override void GetInfo()
     {
-        throw new NotImplementedException(); // описание товара
+        Console.WriteLine($"Товар: {Name}, ID: {Id}, Цена: {Price}, Количество: {Quantity}, Срок годности: {ExpirationDate.ToShortDateString()}, Пищевая ценность: {NutritionalValue}"); // описание товара
     }
 }
 
@@ -56,17 +68,78 @@ public abstract class ProductFlow
 }
 public class ArrivalFlow : ProductFlow // Приход товара
 {
-
+    public override void ProcessFlow(Product product, int quantity)
+    {
+        product.UpdateQuantity(quantity);
+        Console.WriteLine($"Приход: добавлено {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
+    }
 }
 public class SaleFlow : ProductFlow // Реализация товара
 {
-
+    public override void ProcessFlow(Product product, int quantity)
+    {
+        if (product.Quantity >= quantity)
+        {
+            product.UpdateQuantity(-quantity);
+            Console.WriteLine($"Реализация: продано {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
+        }
+        else { Console.WriteLine($"Реализация {quantity} едениц товара {product.Name} невозможна, остаток на складе магазина {product.Quantity}."); }
+    }
 }
 public class WriteOffFlow : ProductFlow // Списание товара
 {
-
+    public override void ProcessFlow(Product product, int quantity)
+    {
+        if (product.Quantity >= quantity)
+        {
+            product.UpdateQuantity(-quantity);
+            Console.WriteLine($"Списание: списано {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
+        }
+        else { Console.WriteLine($"Списание {quantity} едениц товара {product.Name} невозможно, остаток на складе магазина {product.Quantity}."); }
+    }
 }
 public class TransferFlow : ProductFlow // Передача товара (например на другой склад)
 {
-
+    public override void ProcessFlow(Product product, int quantity)
+    {
+        if (product.Quantity >= quantity)
+        {
+            product.UpdateQuantity(-quantity);
+            Console.WriteLine($"Передача: передано {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
+        }
+        else { Console.WriteLine($"Передача {quantity} едениц товара {product.Name} невозможна, остаток на складе магазина {product.Quantity}."); }
+    }
+}
+// Класс управления товарами и потоками
+public class InventoryManager
+{
+    public Dictionary<int, Product> products = new Dictionary<int, Product>();
+    public Dictionary<string, ProductFlow> productFlows = new Dictionary<string, ProductFlow>();
+    // реализовать конструктор с инициализацией доступных стратегий
+    public void AddProduct(Product product)  // добавление товара в базу
+    {
+        if (!products.ContainsKey(product.Id)) 
+        {
+            products.Add(product.Id, product);
+        }
+        else
+        {
+            Console.WriteLine($"Добавляемый {product.Name} уже имеется в базе данных!");
+        }
+    }
+    public void ProcessFlow(string flowType, Product product, int quantity) // выбор стратегии
+    {
+        if (!products.ContainsKey(product.Id))
+        {
+            products.Add(product.Id, product);
+        }
+        if (productFlows.ContainsKey(flowType))
+        {
+            productFlows[flowType].ProcessFlow(product, quantity);
+        }
+        else
+        {
+            Console.WriteLine("Несуществующий тип операции");
+        }
+    } 
 }
