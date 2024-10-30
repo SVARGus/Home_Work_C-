@@ -10,6 +10,12 @@ using System.Collections.Generic;
 продукты питания.
 Предусмотреть классы управления потоком товаров (пришло, реализовано, списано, передано).
  */
+/*
+Задание №2
+Создайте класс Passport (паспорт), который будет содержать паспортную информацию о гражданине заданной страны.
+С помощью механизма наследования, реализуйте класс ForeignPassport (загранпаспорт) производный от Passport.
+Напомним, что заграничный паспорт содержит помимо паспортных данных, также данные о визах, номер заграничного паспорта.
+*/
 
 public class Program
 {
@@ -189,4 +195,40 @@ public class InventoryManager
             Console.WriteLine("Несуществующий тип операции");
         }
     } 
+}
+
+/*
+Задание №2
+Создайте класс Passport (паспорт), который будет содержать паспортную информацию о гражданине заданной страны.
+С помощью механизма наследования, реализуйте класс ForeignPassport (загранпаспорт) производный от Passport.
+Напомним, что заграничный паспорт содержит помимо паспортных данных, также данные о визах, номер заграничного паспорта.
+*/
+// КЛАССЫ ДЛЯ ВЫПОЛНЕНИЯ ВТОРОГО ЗАДАНИЯ ПРО ПАСПОРТ И ЗАГРАН-ПАСПОРТ
+public class Passpot
+{
+    // Все переменные сделаю открытыми в целях выполнения задания по наследованию классов
+    public string numberPassport {  get; set; }
+    public string lastName {  get; set; } // Фамилия
+    public string firstName { get; set; } // Имя
+    public string middleName { get; set; } // Отчество
+    public string fio {  get; } //ФИО
+    public DateTime dateOfBirth { get; set; } // дата рождения
+    public string placeOfBirth { get; set; } // место рождения
+    public string gender { get; set; } // пол
+    public string nationaly { get; set; } // национальность
+    public DateTime dateOfIssue { get; set; } // дата выдачи паспорта
+    public DateTime endDate { get; set; } // дата окончания действия паспорта
+    // методы
+    public virtual void GetInfoPassport()
+    {
+        Console.WriteLine($"Номер паспорта: {numberPassport}; Дата выдачи: {dateOfIssue}; Дата действия до {endDate}; ");// дописать метод вывода
+    }
+}
+public sealed class InternationalPassport : Passpot
+{
+    // дополнительные переменные
+    public override sealed void GetInfoPassport()
+    {
+        Console.WriteLine();// дописать метод вывода
+    }
 }
