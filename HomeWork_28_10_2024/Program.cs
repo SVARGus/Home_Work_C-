@@ -15,7 +15,25 @@ public class Program
 {
     public static void Main()
     {
-
+        // Задание #1
+        // Примеры продуктов для заведения в базу
+        Product product1 = new DomesticChemical(3561, "Порошок стиральный Dosy", 56.5, DateTime.Now.AddYears(2), "какойто химический состав");
+        Product product2 = new DomesticChemical(3689, "Мыло жидкое", 15, DateTime.Now.AddYears(3), "какойто химический состав - 2");
+        Product product3 = new DomesticChemical(0125, "Освежитель Domestes", 30, DateTime.Now.AddYears(2), "какойто химический состав - 3");
+        Product product4 = new FoodProducts(4125, "Капуста квашенная", 5.3, DateTime.Now.AddYears(1), "Калорийность какая-та");
+        Product product5 = new FoodProducts(0125, "Сметана", 3, DateTime.Now.AddYears(1), "Калорийность какая-та - 2");
+        Product product6 = new FoodProducts(4002, "Консерва - сайра", 14.8, DateTime.Now.AddYears(3), "Калорийность какая-та - 3");
+        // Потоки товара
+        string Arrival = "Arrival";
+        string Sale = "Sale";
+        string WriteOff = "WriteOff";
+        string Transfer = "Transfer";
+        var manager = new InventoryManager();
+        manager.AddProduct(product1);
+        manager.ProcessFlow(Arrival, product5, 100);
+        manager.ProcessFlow(Sale, product1, 100);
+        manager.ProcessFlow(Sale, product5, 10);
+        manager.ProcessFlow(WriteOff, product3, 10);
     }
 }
 public abstract class Product
@@ -41,6 +59,10 @@ public class DomesticChemical : Product
     private string _chemicalComposition { get; set; } // Химический состав товара
     public string ChemicalComposition { get { return _chemicalComposition; } set { _chemicalComposition = value; } }
     // Добавить конструктор без указания количества
+    public DomesticChemical(int id, string name, double price, DateTime expiretionDate, string chemicalComposition)
+    {
+        Id = id; Name = name; Price = price; ExpirationDate = expiretionDate; ChemicalComposition = chemicalComposition; Quantity = 0;
+    }
     public override void GetInfo()
     {
         Console.WriteLine($"Товар: {Name}, ID: {Id}, Цена: {Price}, Количество: {Quantity}, Срок годности: {ExpirationDate.ToShortDateString()}, Состав: {ChemicalComposition}"); // описание товара
@@ -53,6 +75,10 @@ public class FoodProducts : Product
     private string _nutritionalValue { get; set; } // Пищевая ценность
     public string NutritionalValue { get { return _nutritionalValue; } set { _nutritionalValue = value; } }
     // Добавить конструктор без указания количества
+    public FoodProducts(int id, string name, double price, DateTime expiretionDate, string nutritionalValue)
+    {
+        Id = id; Name = name; Price = price; ExpirationDate = expiretionDate; NutritionalValue = nutritionalValue; Quantity = 0;
+    }
     public override void GetInfo()
     {
         Console.WriteLine($"Товар: {Name}, ID: {Id}, Цена: {Price}, Количество: {Quantity}, Срок годности: {ExpirationDate.ToShortDateString()}, Пищевая ценность: {NutritionalValue}"); // описание товара
@@ -72,6 +98,8 @@ public class ArrivalFlow : ProductFlow // Приход товара
     {
         product.UpdateQuantity(quantity);
         Console.WriteLine($"Приход: добавлено {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
+        Console.WriteLine("Тестовый вывод о товаре после операции");
+        product.GetInfo();
     }
 }
 public class SaleFlow : ProductFlow // Реализация товара
@@ -84,6 +112,8 @@ public class SaleFlow : ProductFlow // Реализация товара
             Console.WriteLine($"Реализация: продано {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
         }
         else { Console.WriteLine($"Реализация {quantity} едениц товара {product.Name} невозможна, остаток на складе магазина {product.Quantity}."); }
+        Console.WriteLine("Тестовый вывод о товаре после операции");
+        product.GetInfo();
     }
 }
 public class WriteOffFlow : ProductFlow // Списание товара
@@ -96,6 +126,8 @@ public class WriteOffFlow : ProductFlow // Списание товара
             Console.WriteLine($"Списание: списано {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
         }
         else { Console.WriteLine($"Списание {quantity} едениц товара {product.Name} невозможно, остаток на складе магазина {product.Quantity}."); }
+        Console.WriteLine("Тестовый вывод о товаре после операции");
+        product.GetInfo();
     }
 }
 public class TransferFlow : ProductFlow // Передача товара (например на другой склад)
@@ -108,19 +140,34 @@ public class TransferFlow : ProductFlow // Передача товара (нап
             Console.WriteLine($"Передача: передано {quantity} едениц товара {product.Name}. Текущее количество {product.Quantity}.");
         }
         else { Console.WriteLine($"Передача {quantity} едениц товара {product.Name} невозможна, остаток на складе магазина {product.Quantity}."); }
+
+        Console.WriteLine("Тестовый вывод о товаре после операции");
+        product.GetInfo();
     }
 }
 // Класс управления товарами и потоками
 public class InventoryManager
 {
     public Dictionary<int, Product> products = new Dictionary<int, Product>();
-    public Dictionary<string, ProductFlow> productFlows = new Dictionary<string, ProductFlow>();
+    public Dictionary<string, ProductFlow> productFlows;
     // реализовать конструктор с инициализацией доступных стратегий
+    public InventoryManager()
+    {
+        // Инициализация доступных стратегий
+        productFlows = new Dictionary<string, ProductFlow>
+        {
+            { "Arrival", new ArrivalFlow() },
+            { "Sale", new SaleFlow() },
+            { "WriteOff", new WriteOffFlow() },
+            { "Transfer", new TransferFlow() }
+        };
+    }
     public void AddProduct(Product product)  // добавление товара в базу
     {
         if (!products.ContainsKey(product.Id)) 
         {
             products.Add(product.Id, product);
+            Console.WriteLine($"В базу добавлен новый продукт{product.Name}");
         }
         else
         {
