@@ -204,31 +204,99 @@ public class InventoryManager
 Напомним, что заграничный паспорт содержит помимо паспортных данных, также данные о визах, номер заграничного паспорта.
 */
 // КЛАССЫ ДЛЯ ВЫПОЛНЕНИЯ ВТОРОГО ЗАДАНИЯ ПРО ПАСПОРТ И ЗАГРАН-ПАСПОРТ
-public class Passpot
+public class Passport
 {
     // Все переменные сделаю открытыми в целях выполнения задания по наследованию классов
-    public string numberPassport {  get; set; }
-    public string lastName {  get; set; } // Фамилия
-    public string firstName { get; set; } // Имя
-    public string middleName { get; set; } // Отчество
-    public string fio {  get; } //ФИО
-    public DateTime dateOfBirth { get; set; } // дата рождения
-    public string placeOfBirth { get; set; } // место рождения
-    public string gender { get; set; } // пол
-    public string nationaly { get; set; } // национальность
-    public DateTime dateOfIssue { get; set; } // дата выдачи паспорта
-    public DateTime endDate { get; set; } // дата окончания действия паспорта
+    public string NumberPassport {  get; set; } // Номер паспорта
+    public DateTime DateOfIssue { get; set; } // дата выдачи паспорта
+    public DateTime EndDate { get; set; } // дата окончания действия паспорта
+    public string LastName {  get; set; } // Фамилия
+    public string FirstName { get; set; } // Имя
+    public string MiddleName { get; set; } // Отчество
+    public string Fio => $"{LastName} {FirstName} {MiddleName}"; //ФИО
+    public DateTime DateOfBirth { get; set; } // дата рождения
+    public string PlaceOfBirth { get; set; } // место рождения
+    public string Gender { get; set; } // пол
+    public string Nationaly { get; set; } // национальность
+    // конструктор
+    public Passport(string number, DateTime dateOfIssue, DateTime endDate, string lastName, string firstname,
+                   string middleName, DateTime dateOfBirth, string plaseOfBirth, string gender, string national)
+    {
+        NumberPassport = number; 
+        DateOfIssue = dateOfIssue; 
+        EndDate = endDate; 
+        LastName = lastName; 
+        FirstName = firstname; 
+        MiddleName = middleName; 
+        DateOfBirth = dateOfBirth; 
+        PlaceOfBirth = plaseOfBirth; 
+        Gender = gender; 
+        Nationaly = national;
+    }
     // методы
     public virtual void GetInfoPassport()
     {
-        Console.WriteLine($"Номер паспорта: {numberPassport}; Дата выдачи: {dateOfIssue}; Дата действия до {endDate}; ");// дописать метод вывода
+        Console.WriteLine($"Номер паспорта: {NumberPassport}; Дата выдачи: {DateOfIssue}; Дата действия до {EndDate}; ");// дописать метод вывода
+        GetInfoPerson();
+    }
+    public void GetInfoPerson()
+    {
+        Console.WriteLine($"Фамилия: {LastName} Имя: {FirstName} Отчество: {MiddleName}");
+        Console.WriteLine($"Пол: {Gender} Национальность: {Nationaly}");
+        Console.WriteLine($"Дата рождения: {DateOfBirth} Место рождения {PlaceOfBirth}");
     }
 }
-public sealed class InternationalPassport : Passpot
+// отдельный класс для виз
+public class Visa
+{
+    public string NumeCountry { get; set; } // Страна которая выдала визу
+    public string NumberVisa { get; set; } // номер визы
+    public DateTime OpenDate { get; set; } // дата начала действия визы
+    public DateTime EndDate { get; set; } // дата окончания визы
+
+    public Visa(string numeCountri, string numberVisa, DateTime openDate, int year) // по умолчанию все изы эквиваленты году, но можно добавить возможность выдачи на определенное количество месяцев или дней
+    {
+        this.NumeCountry = numeCountri;
+        this.NumberVisa = numberVisa;
+        this.OpenDate = openDate;
+        if (year <= 0)
+        {
+            Console.WriteLine("Не верный срок действия визы");
+            this.EndDate = openDate;
+        }
+        else
+            this.EndDate = openDate.AddYears(year);
+    }
+    public void GetInfoVisa()
+    {
+        Console.WriteLine($"Страна выдавшая визу: {NumeCountry}, Номер визы: {NumberVisa}, Дата выдачи визы: {OpenDate}, Дата окончания визы {EndDate}.");
+    }
+}
+// класс загран паспорта
+public sealed class ForeignPassport : Passport
 {
     // дополнительные переменные
+    public string NumberInternalPassport { get; set; } // номер заграничного паспорта
+    private List<Visa> _visas { get; set; }
+    public List<Visa> Visas { get => _visas; set => _visas = value; }
+    //  конструктор
+    public ForeignPassport(string numberInternalPassport, string number, DateTime dateOfIssue, DateTime endDate, 
+        string lastName, string firstname, string middleName, DateTime dateOfBirth, string plaseOfBirth, string gender, string national) 
+        :base(number, dateOfIssue, endDate, lastName, firstname,middleName, dateOfBirth, plaseOfBirth, gender, national)
+    {
+        NumberInternalPassport = numberInternalPassport;
+        Visas = new List<Visa>();
+    }
     public override sealed void GetInfoPassport()
     {
-        Console.WriteLine();// дописать метод вывода
+        Console.WriteLine($"Номер загран паспорта: {NumberInternalPassport}");
+        Console.WriteLine($"Номер паспорта: {NumberPassport}; Дата выдачи: {DateOfIssue}; Дата действия до {EndDate}; ");// дописать метод вывода
+        GetInfoPerson();
+        Console.WriteLine("Список выданных виз: ");
+        foreach (var item in Visas)
+        {
+            item.GetInfoVisa();
+            Console.WriteLine("------------------------------------");
+        }
     }
 }
