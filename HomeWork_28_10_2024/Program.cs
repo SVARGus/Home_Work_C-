@@ -23,7 +23,8 @@ public class Program
     {
         // Задание #1
         // Примеры продуктов для заведения в базу
-        Product product1 = new DomesticChemical(3561, "Порошок стиральный Dosy", 56.5, DateTime.Now.AddYears(2), "какойто химический состав");
+        Console.WriteLine("Залдание №1 - ТЕСТ\n\n");
+                Product product1 = new DomesticChemical(3561, "Порошок стиральный Dosy", 56.5, DateTime.Now.AddYears(2), "какойто химический состав");
         Product product2 = new DomesticChemical(3689, "Мыло жидкое", 15, DateTime.Now.AddYears(3), "какойто химический состав - 2");
         Product product3 = new DomesticChemical(0125, "Освежитель Domestes", 30, DateTime.Now.AddYears(2), "какойто химический состав - 3");
         Product product4 = new FoodProducts(4125, "Капуста квашенная", 5.3, DateTime.Now.AddYears(1), "Калорийность какая-та");
@@ -40,6 +41,57 @@ public class Program
         manager.ProcessFlow(Sale, product1, 100);
         manager.ProcessFlow(Sale, product5, 10);
         manager.ProcessFlow(WriteOff, product3, 10);
+        Console.WriteLine("Залдание №2 - ТЕСТ\n\n");
+        // Создаем экземпляр паспорта с тестовыми данными
+        Passport passport = new Passport(
+            number: "123456",
+            dateOfIssue: new DateTime(2015, 5, 15),
+            endDate: new DateTime(2025, 5, 15),
+            lastName: "Кузнецов",
+            firstname: "Павел",
+            middleName: "Николаевич",
+            dateOfBirth: new DateTime(1989, 01, 24),
+            plaseOfBirth: "Ленинград",
+            gender: "Мужской",
+            national: "Россия"
+        );
+        // Выводим информацию по основному паспорту
+        Console.WriteLine("== Информация по внутреннему паспорту ==");
+        passport.GetInfoPassport();
+        Console.WriteLine();
+        // Создаем визы для загранпаспорта
+        Visa visa1 = new Visa(
+            numeCountri: "США",
+            numberVisa: "USA123456",
+            openDate: new DateTime(2022, 1, 1),
+            year: 1
+        );
+        Visa visa2 = new Visa(
+            numeCountri: "Франция",
+            numberVisa: "FR123456",
+            openDate: new DateTime(2021, 6, 15),
+            year: 2
+        );
+        // Создаем экземпляр заграничного паспорта
+        ForeignPassport foreignPassport = new ForeignPassport(
+            numberInternalPassport: "FP987654",
+            number: "123456",
+            dateOfIssue: new DateTime(2018, 4, 10),
+            endDate: new DateTime(2028, 4, 10),
+            lastName: "Иванов",
+            firstname: "Иван",
+            middleName: "Иванович",
+            dateOfBirth: new DateTime(1990, 1, 1),
+            plaseOfBirth: "Москва",
+            gender: "Мужской",
+            national: "Россия"
+        );
+        // Добавляем визы в загранпаспорт
+        foreignPassport.Visas.Add(visa1);
+        foreignPassport.Visas.Add(visa2);
+        // Выводим информацию по заграничному паспорту
+        Console.WriteLine("== Информация по заграничному паспорту ==");
+        foreignPassport.GetInfoPassport();
     }
 }
 public abstract class Product
