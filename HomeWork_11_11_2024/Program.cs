@@ -11,9 +11,9 @@ public class Program
 }
 
 [Serializable]
-class menu
+class MainMenu
 {
-    public string id { get; set; }
-    public string value { get; set; }
+    public string Id { get; set; }
+    public string Value { get; set; }
 
 }
