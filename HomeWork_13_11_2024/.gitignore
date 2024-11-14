@@ -1,0 +1,66 @@
+# Папка Visual Studio
+.vs/
+
+# Системные файлы
+*.DS_Store
+Thumbs.db
+
+# Папка для сборок
+bin/
+obj/
+out/
+
+# Пакеты NuGet
+*.nupkg
+# Папка для хранения загруженных пакетов NuGet
+packages/
+# NuGet v3's project.json files produces this file, which should also be ignored
+project.lock.json
+# If using the new package reference feature in VS2017+, NuGet packages will be installed in the packages folder
+*.nuget
+
+# Папки публикации
+publish/
+artifacts/
+
+# Конфигурационные файлы пользователей
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Файлы настройки код-анализа, стиля кода
+*.ruleset
+*.dotSettings
+
+# Логи
+*.log
+
+# Файлы временной сборки и кэш
+*.ideacache
+*.idea/
+.idea/
+
+# Резервные файлы
+*_Backup*/
+
+# Конфигурационные файлы для Mac
+*.xcodeproj
+*.xcworkspace
+
+# Rider IDE
+.idea/
+*.sln.iml
+
+# Файлы для работы с Azure
+.vscode/
+**/*.launch.json
+**/*.azureFunctionsToolsSettings.json
+
+# Файлы для работы с контейнерами Docker
+docker-compose.override.yml
+docker-compose.*.yml
+.dockerignore
+
+# Файлы конфигурации в Windows
+*.directory
