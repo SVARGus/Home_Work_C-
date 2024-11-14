@@ -35,7 +35,7 @@ public class Program
         string jsonString = File.ReadAllText(filePath);
         Console.WriteLine(jsonString);
         Root root = JsonSerializer.Deserialize<Root>(jsonString);
-        // реализовать отдельный вывод объекта для проверки корректности
+        root.Display(); // Тестовый вывод на экран самого содержимого объекта
     }
 }
 
@@ -48,11 +48,26 @@ public class Program
     public string Value { get; set; }
     [JsonPropertyName("popup")]
     public Popup Popup { get; set; }
+    public void Display()
+    {
+        Console.WriteLine($"id: {Id}, value: {Value}. popup:");
+        Popup.Display();
+    }
 }
 public class Popup
 {
     [JsonPropertyName("menuitem")]
     public List<MenuItem> Menuitem { get; set; }
+    public void Display()
+    {
+        Console.WriteLine("Список menuitem: ");
+        foreach(MenuItem m in Menuitem)
+        {
+            int index = 1;
+            Console.Write($"{index}) ");
+            m.Display();
+        }
+    }
 }
 public class MenuItem
 {
@@ -60,9 +75,18 @@ public class MenuItem
     public string Value {  set; get; }
     [JsonPropertyName("onclick")]
     public string Onclick { get; set; }
+    public void Display()
+    {
+        Console.WriteLine($"value: {Value}, onclick: {Onclick}");
+    }
 }
 public class Root
 {
     [JsonPropertyName("menu")]
     public MainMenu Menu { get; set; }
+    public void Display()
+    {
+        Console.WriteLine("menu:");
+        Menu.Display();
+    }
 }
