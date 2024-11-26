@@ -46,9 +46,47 @@ public class Program
         {
             Console.WriteLine($"{averageGrade.Subject}: {averageGrade.Average}");
         }
-
+        Console.WriteLine();
+        Console.WriteLine();
         // Задание 2
+        var products = new List<Product>
+        {
+            new Product (1, 5, 10.6),
+            new Product (2, 3, 36.6),
+            new Product (3, 12, 51.5), 
+            new Product (4, 2, 40.3),
+            new Product (5, 7, 78.9)
+        };
+        var productLocalizations = new List<ProductLocalization>
+        {
+            new ProductLocalization(1, "Яблоко", "Apple"),
+            new ProductLocalization(2, "Апельсин", "Orange"),
+            new ProductLocalization(3, "Банан", "Banana"),
+            new ProductLocalization(4, "Груша", "Pear"),
+            new ProductLocalization(5, "Тыква", "Pumpkin")
+        };
+        GetProductsAbovePriceByLocale(products, productLocalizations, 50, "eng");
 
+
+    }
+    public static void GetProductsAbovePriceByLocale(List<Product> products, List<ProductLocalization> productLocalizations, double price, string locale)
+    {
+        var filteredProducts = products
+            .Where(p => p.Price > price)
+            .Select(p =>
+            {
+                var localization = productLocalizations.FirstOrDefault(p1 => p1.ProductId == p.Id);
+                string name = locale.ToLower() == "ru" ? (localization?.RuName ?? "Нет Имени") : (localization?.EngName ?? "Not Name");
+                return new {Name = name, Price = p.Price};
+            });
+        foreach (var product in filteredProducts)
+        {
+            Console.WriteLine($"{product.Name} - {product.Price}");
+        }
+    }
+    public static void SearchProductsByNameAndLocale(List<Product> products, List<ProductLocalization> productLocalizations, string searchString, string locale)
+    { 
+        
     }
 }
 public class Marks
@@ -77,5 +115,29 @@ public class Marks
         {
             keyValuePairs.Add(disciplines,new List<int> { grade });
         }
+    }
+}
+public class Product
+{
+    public int Id { get; set; } // айди
+    public int Amount { get; set; } // количество 
+    public double Price { get; set; } // цена
+    public Product(int id, int amount, double price)
+    {
+       Id = id;
+       Amount = amount;
+       Price = price;
+    }
+}
+public class ProductLocalization
+{
+    public int ProductId { get; set; }
+    public string RuName { get; set; }
+    public string EngName { get; set; }
+    public ProductLocalization(int productId, string ruName, string engName)
+    {
+        ProductId = productId;
+        RuName = ruName;
+        EngName = engName;
     }
 }
