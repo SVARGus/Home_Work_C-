@@ -66,8 +66,8 @@ public class Program
             new ProductLocalization(5, "Тыква", "Pumpkin")
         };
         GetProductsAbovePriceByLocale(products, productLocalizations, 50, "eng");
-
-
+        Console.WriteLine();
+        SearchProductsByNameAndLocale(products, productLocalizations, "p", "eng");
     }
     public static void GetProductsAbovePriceByLocale(List<Product> products, List<ProductLocalization> productLocalizations, double price, string locale)
     {
@@ -85,8 +85,19 @@ public class Program
         }
     }
     public static void SearchProductsByNameAndLocale(List<Product> products, List<ProductLocalization> productLocalizations, string searchString, string locale)
-    { 
-        
+    {
+        var filteredProducts = products
+            .Select(p =>
+            {
+                var localization = productLocalizations.FirstOrDefault(p1 => p1.ProductId == p.Id);
+                string name = locale.ToLower() == "ru" ? (localization?.RuName ?? "Нет Имени") : (localization?.EngName ?? "Not Name");
+                return new { Name = name, Price = p.Price };
+            })
+            .Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+        foreach (var product in filteredProducts)
+        {
+            Console.WriteLine($"{product.Name} - {product.Price}");
+        }
     }
 }
 public class Marks
