@@ -32,10 +32,17 @@ public class Program
         { new User(0), new User(1), new User(2), new User(3), new User(4), new User(5),
         new User(6), new User(7), new User(8), new User(9) };
         Random rand = new Random();
+        List<Thread> threads = new List<Thread>();
         foreach (var user in users)
         {
-            user.GetTaxi(company, rand.Next(500, 1001));
+            Thread userThread = new Thread(() => user.GetTaxi(company, rand.Next(500, 1001)));
+            threads.Add(userThread);
+            userThread.Start();
             Thread.Sleep(150);
+        }
+        foreach(var thread in threads)
+        {
+            thread.Join();
         }
     }
 }
@@ -59,20 +66,15 @@ public class User
     {
         if (account.Balans <= 0 || account.Balans < price)
         {
-            throw new Exception("Недостаточно средств на счете компании для заказа такси");
+            Console.WriteLine($"Недостаточно средств на счете компании для заказа такси для сотрудника компании {Id}. Стоимость поездки = {price}");
         }
         else
         {
-            Thread myThread = new (() => Print(account, price));
-            myThread.Start();
+            Console.WriteLine($"Сотрудник компании {Id} начал поездуку");
+            Thread.Sleep(300);
+            account.Balans -= price;
+            Console.WriteLine($"Поезда сотрудника {Id} завершена, стоимость поездки составляет {price} \nБаланс компании {account.Balans}");
+            //Console.WriteLine($"Баланс компании {account.Balans}");
         }
-    }
-    public void Print (Account account, int price)
-    {
-        Console.WriteLine($"Сотрудник компании {Id} начал поездуку");
-        Thread.Sleep(300);
-        account.Balans -= price;
-        Console.WriteLine($"Поезда сотрудника {Id} завершена, стоимость поездки составляет {price}");
-        Console.WriteLine($"Баланс компании {account.Balans}");
     }
 }
