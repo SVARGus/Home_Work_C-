@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using MyNameEmployee;
+using Models_Employee;
 
-namespace MyNameTask
+namespace Models_MyTask
 {
 	public class MyTask
 	{
@@ -9,7 +9,7 @@ namespace MyNameTask
 		public string Title { get; set; }
 		public DateTimeOffset CreationDate { get; set; }
 		public DateTimeOffset Deadline {  get; set; }
-		public Employee Assignee { get; set; }
+        public Employee Assignee { get; set; }
 		public TaskStatus Status { get; set; }
 		public Risks Risks { get; set; }
 		public List<int> SubTasks { get; set; }

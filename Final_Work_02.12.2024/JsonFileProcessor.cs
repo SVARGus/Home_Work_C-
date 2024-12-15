@@ -1,14 +1,14 @@
 ﻿
 
-using MyNameEmployee;
-using MyNameTask;
+using Models_Employee;
+using Models_MyTask;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 
 namespace MyJsonFileProcessor
 {
-	internal class JsonFileProcessor
+	public class JsonFileProcessor
 	{
 		public string DownloadFiles(in string filePath) // метод принимающий адрес файла формата Json и переводящий его в строку
 		{

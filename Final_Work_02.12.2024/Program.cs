@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
-using MyNameEmployee;
-using MyNameTask;
+using Models_Employee;
+using Models_MyTask;
 using MyJsonFileProcessor;
 
 public class Program
