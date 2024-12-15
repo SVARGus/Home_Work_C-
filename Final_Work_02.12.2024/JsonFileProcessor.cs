@@ -10,7 +10,7 @@ namespace MyJsonFileProcessor
 {
 	internal class JsonFileProcessor
 	{
-		public string DownloadFiles(string filePath) // метод принимающий адрес файла формата Json и переводящий его в строку
+		public string DownloadFiles(in string filePath) // метод принимающий адрес файла формата Json и переводящий его в строку
 		{
 			/* сдесь можно настроить логику определения в каком формате передан файл 
 			и его обрабатывать соотвествующим образом, напримет это может быть txt, 
@@ -20,7 +20,7 @@ namespace MyJsonFileProcessor
 			string jsonString = File.ReadAllText(filePath);
 			return jsonString;
 		}
-		public (Dictionary<int, Employee>, Dictionary<int, MyTask>) ParseJsonToDictionary(string employeeJsonString, string taskJsonString)
+		public (Dictionary<int, Employee>, Dictionary<int, MyTask>) ParseJsonToDictionary(in string employeeJsonString, in string taskJsonString)
 		{
 			var employees = JsonSerializer.Deserialize<List<Employee>>(employeeJsonString);
 			var tasks = JsonSerializer.Deserialize<List<MyTask>>(taskJsonString);
@@ -66,7 +66,7 @@ namespace MyJsonFileProcessor
 			}
 		}
 		// метод для вызова всех шагов
-		public (Dictionary<int, Employee>, Dictionary<int, MyTask>) ProcessFile(string employeeFilePath, string taskFilePath)
+		public (Dictionary<int, Employee>, Dictionary<int, MyTask>) ProcessFile(in string employeeFilePath, in string taskFilePath)
 		{
 			var employeeJsonStr = DownloadFiles(employeeFilePath);
 			var taskJsonStr = DownloadFiles(taskFilePath);
@@ -79,7 +79,7 @@ namespace MyJsonFileProcessor
 		{
 			return JsonSerializer.Serialize(data); // проверить работает или нет
 		}
-		public void SaveJsonToFile(string jsonString, string filePath)
+		public void SaveJsonToFile(in string jsonString, in string filePath)
 		{
 			// Реализация метода
 		}
