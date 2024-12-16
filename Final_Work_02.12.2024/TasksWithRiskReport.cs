@@ -8,7 +8,12 @@ namespace Program_Report
     {
         public IEnumerable<MyTask> GenerateReport(in Dictionary<int, MyTask> tasks, in Dictionary<int, Employee> employees, in object parameter)
         {
-            throw new NotImplementedException();
+            if (parameter is not Risks taskRisk)
+            {
+                throw new ArgumentException("Invalid Risk for TasksWithRiskReport");
+            }
+            return tasks.Values
+                .Where(task => task.Risks == taskRisk);
         }
     }
 }

@@ -8,7 +8,13 @@ namespace Program_Report
     {
         public IEnumerable<MyTask> GenerateReport(in Dictionary<int, MyTask> tasks, in Dictionary<int, Employee> employees, in object parameter)
         {
-            throw new NotImplementedException();
+            if (parameter is not int idTask || !tasks.ContainsKey(idTask))
+            {
+                throw new ArgumentException("Invalid Task Id for SubTasksForTaskIdReport");
+            }
+            var task = tasks[idTask].SubTasksList.ToDictionary(tasks1 => tasks1.Id);
+
+            return task;// гдето ошибка???
         }
     }
 }

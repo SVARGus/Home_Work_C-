@@ -12,7 +12,6 @@ namespace Program_Report
             {
                 throw new ArgumentException("Invalid Employee Id for TaskForEmployeeReport");
             }
-
             return tasks.Values
                 .Where(task => task.Assignee?.Id == EmployeeId);
         }
