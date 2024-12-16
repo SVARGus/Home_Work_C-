@@ -20,21 +20,31 @@ namespace MyJsonFileProcessor
 			string jsonString = File.ReadAllText(filePath);
 			return jsonString;
 		}
-		public (Dictionary<int, Employee>, Dictionary<int, MyTask>) ParseJsonToDictionary(in string employeeJsonString, in string taskJsonString)
+		//public (Dictionary<int, Employee>, Dictionary<int, MyTask>) ParseJsonToDictionary(in string employeeJsonString, in string taskJsonString)
+		//{
+		//	var employees = JsonSerializer.Deserialize<List<Employee>>(employeeJsonString);
+		//	var tasks = JsonSerializer.Deserialize<List<MyTask>>(taskJsonString);
+		//	Dictionary<int, Employee> employeesDictionary = new Dictionary<int, Employee>();
+		//	foreach (var employee in employees)
+		//	{
+		//		employeesDictionary[employee.Id] = employee;
+		//	}
+		//	Dictionary<int, MyTask> tasksDictionary = new Dictionary<int, MyTask>();
+		//	foreach (var task in tasks)
+		//	{
+		//		tasksDictionary[task.Id] = task;
+		//	}
+		//	return (employeesDictionary, tasksDictionary);
+		//}
+		public Dictionary<int, T> ParseJsonToDictionary<T>(in string jsonString) where T : Entity
 		{
-			var employees = JsonSerializer.Deserialize<List<Employee>>(employeeJsonString);
-			var tasks = JsonSerializer.Deserialize<List<MyTask>>(taskJsonString);
-			Dictionary<int, Employee> employeesDictionary = new Dictionary<int, Employee>();
-			foreach (var employee in employees)
+			var entitys = JsonSerializer.Deserialize<List<T>>(jsonString);
+			Dictionary<int, T> dictionary = new Dictionary<int, T>();
+			foreach(var entity in entitys)
 			{
-				employeesDictionary[employee.Id] = employee;
+				dictionary[entity.Id] = entity;
 			}
-			Dictionary<int, MyTask> tasksDictionary = new Dictionary<int, MyTask>();
-			foreach (var task in tasks)
-			{
-				tasksDictionary[task.Id] = task;
-			}
-			return (employeesDictionary, tasksDictionary);
+			return dictionary;
 		}
 		public void BuildRelationships(Dictionary<int, Employee> employees, Dictionary<int, MyTask> tasks)
 		{
@@ -70,18 +80,24 @@ namespace MyJsonFileProcessor
 		{
 			var employeeJsonStr = DownloadFiles(employeeFilePath);
 			var taskJsonStr = DownloadFiles(taskFilePath);
-			var(employeeDict, taskDict) = ParseJsonToDictionary(employeeJsonStr, taskJsonStr);
+			//var(employeeDict, taskDict) = ParseJsonToDictionary(employeeJsonStr, taskJsonStr);
+			var employeeDict = ParseJsonToDictionary<Employee>(employeeJsonStr);
+			var taskDict = ParseJsonToDictionary<MyTask>(taskJsonStr);
 			BuildRelationships(employeeDict, taskDict);
 			return(employeeDict,taskDict);
 		}
 		//Метод конвертации Dictionary или List в Json строку
 		public string ConvertToJson<T>(T data)
 		{
-			return JsonSerializer.Serialize(data); // проверить работает или нет
+			return JsonSerializer.Serialize(data); // не работает с кирилицей!!!
 		}
 		public void SaveJsonToFile(in string jsonString, in string filePath)
 		{
-			// Реализация метода
+			File.WriteAllText(filePath, jsonString);
 		}
+	}
+	public abstract class Entity
+	{
+		public int Id { get; set; }
 	}
 }

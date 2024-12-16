@@ -6,6 +6,6 @@ namespace Program_Report
 {
     public interface ITaskReport
     {
-        public IEnumerable<MyTask> GenerateReport(in Dictionary<int, MyTask> tasks, in Dictionary<int, Employee> employees, in object parameter);
+        public Dictionary<int, MyTask> GenerateReport(in Dictionary<int, MyTask> tasks, in Dictionary<int, Employee> employees, in object parameter);
     }
 }

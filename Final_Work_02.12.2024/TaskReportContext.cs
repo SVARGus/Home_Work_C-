@@ -7,9 +7,9 @@ namespace Program_Report
     internal class TaskReportContext // класс для переключения между стратегиями (отчетами).
     {
         private ITaskReport _strategy;
-        public TaskReportContext(ITaskReport strategy)
+        public void SetReport(ITaskReport strategy)
         { _strategy = strategy; }
-        public IEnumerable<MyTask> GenerateReport(in Dictionary<int, MyTask> tasks, in Dictionary<int, Employee> employees, in object parameter)
+        public Dictionary<int, MyTask> GenerateReport(in Dictionary<int, MyTask> tasks, in Dictionary<int, Employee> employees, in object parameter)
         {
             if (_strategy == null)
                 throw new ArgumentNullException("Strategy Report is not set");

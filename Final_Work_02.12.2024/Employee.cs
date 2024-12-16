@@ -1,10 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿using MyJsonFileProcessor;
+using System.Text.Json.Serialization;
 
 namespace Models_Employee
 {
-	public class Employee
+	public class Employee : Entity
 	{
-		public int Id { get; set; }
+		//public int Id { get; set; }
 		public string Name { get; set; }
 		public Positions Position { get; set; }
 		public string Login { get; set; }

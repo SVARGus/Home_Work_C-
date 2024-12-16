@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 using Models_Employee;
+using MyJsonFileProcessor;
 
 namespace Models_MyTask
 {
-	public class MyTask
+	public class MyTask : Entity
 	{
-		public int Id { get; set; }
+		//public int Id { get; set; }
 		public string Title { get; set; }
 		public DateTimeOffset CreationDate { get; set; }
 		public DateTimeOffset Deadline {  get; set; }
